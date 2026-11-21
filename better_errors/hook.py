@@ -233,6 +233,43 @@ def install_cmd_hook() -> Path:
     return script_path
 
 
+def cmd_hook_registered() -> bool:
+    """Whether the AutoRun registry value actually references our script.
+
+    This is the real source of truth for whether the cmd.exe hook is
+    active -- unlike checking for the batch script file alone, which can
+    exist on disk even if the registry write that activates it failed
+    (e.g. blocked by antivirus/EDR software, which commonly treats
+    ``HKCU\\...\\Command Processor\\AutoRun`` as a malware-persistence
+    location and denies writes to it).
+    """
+    if sys.platform != "win32":
+        return False
+
+    try:
+        import winreg
+    except ImportError:  # pragma: no cover - non-Windows
+        return False
+
+    try:
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Command Processor", 0, winreg.KEY_QUERY_VALUE
+        )
+    except FileNotFoundError:
+        return False
+
+    try:
+        try:
+            existing_autorun, _ = winreg.QueryValueEx(key, "AutoRun")
+        except FileNotFoundError:
+            return False
+    finally:
+        winreg.CloseKey(key)
+
+    script_path = cmd_autorun_script_path()
+    return f'call "{script_path}"' in existing_autorun
+
+
 def uninstall_cmd_hook() -> bool:
     """Remove the better-errors AutoRun registration and batch script.
 
