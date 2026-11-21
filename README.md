@@ -38,9 +38,9 @@ Default tracebacks and built-in hints (like `Did you mean ...?`) often point you
 `better-errors` is currently installed from source (requires **Python 3.10+**):
 
 ```bash
-[git clone https://github.com/Belal-ElKhayat/better-errors.git
+git clone https://github.com/Belal-ElKhayat/better-errors.git
 cd better-errors
-pip install -e .]
+pip install -e .
 ```
 
 ## Quickstart
