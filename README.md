@@ -7,6 +7,8 @@
 
 > Plain-English error explanations, reviewable diffs, and `y/N` patches — powered by whatever LLM API you already use.
 
+![better-errors demo](assets/demo.gif)
+
 `better-errors` catches runtime errors from your commands, explains the **real root cause** instead of blindly repeating misleading interpreter hints, previews a unified diff, and asks for your permission (`Fix bug? [y/N]`) before touching any file on disk.
 
 <br>
