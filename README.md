@@ -1,8 +1,23 @@
 # better-errors
 
-> Plain-English error explanations, reviewable diffs, and `y/N` patches—powered by whatever LLM API you already use.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Providers](https://img.shields.io/badge/providers-OpenAI%20%7C%20Groq%20%7C%20Anthropic%20%7C%20Gemini%20%7C%20Ollama-5a5a5a)](#supported-providers)
+[![Platform](https://img.shields.io/badge/shell%20hooks-Windows-0078D6)](#shell-hooks-windows-powershell--cmdexe)
+
+> Plain-English error explanations, reviewable diffs, and `y/N` patches — powered by whatever LLM API you already use.
 
 `better-errors` catches runtime errors from your commands, explains the **real root cause** instead of blindly repeating misleading interpreter hints, previews a unified diff, and asks for your permission (`Fix bug? [y/N]`) before touching any file on disk.
+
+<br>
+
+<table>
+<tr><td>
+
+**📑 Contents** — [Why](#why-better-errors) · [Install](#installation) · [Quickstart](#quickstart) · [Shell Hooks](#shell-hooks-windows-powershell--cmdexe) · [Providers](#supported-providers) · [How it Works](#how-it-works--security) · [Structure](#project-structure) · [Dev](#development) · [Roadmap](#roadmap)
+
+</td></tr>
+</table>
 
 ```text
 $ better-errors python app.py
@@ -29,9 +44,21 @@ KeyError: 'total'
 Fix bug? [y/N]:
 ```
 
+---
+
 ## Why `better-errors`?
 
 Default tracebacks and built-in hints (like `Did you mean ...?`) often point you toward surface-level guesses rather than the actual cause. `better-errors` inspects the traceback and relevant local lines around the failure, redacts sensitive secrets before any API call, explains what actually went wrong, and lets you approve or reject the fix.
+
+| | |
+|---|---|
+| 🧠 | **Real root cause**, not a restated error message |
+| 🔍 | **Reviewable diff** before anything touches disk |
+| 🔐 | **Secrets redacted** before any text leaves your machine |
+| ↩️ | **One-command undo** via timestamped backups |
+| 🔌 | **Bring your own provider** — OpenAI, Groq, Anthropic, Gemini, or fully local Ollama |
+
+---
 
 ## Installation
 
@@ -58,6 +85,8 @@ pip install -e .
 > PATH, then open a **new** terminal window. On Windows: `Win` → search **"Environment Variables"**
 > → **Edit the system environment variables** → **Environment Variables** → under **User
 > variables**, select `Path` → **Edit** → **New** → paste that folder → OK everywhere.
+
+---
 
 ## Quickstart
 
@@ -86,6 +115,8 @@ better-errors enable    # re-enable analysis
 better-errors --undo    # restore the most recent backed-up file
 ```
 
+---
+
 ## Shell Hooks (Windows PowerShell & `cmd.exe`)
 
 Want errors caught automatically without typing `better-errors` every time? You can hook common dev commands (`python`, `python3`, `node`, `npm`, `npx`, `pytest`, `go`, `cargo`, `java`, `ruby`):
@@ -102,6 +133,8 @@ This hooks a fixed, explicit list of commands (see `HOOKED_COMMANDS` in `hook.py
 system-wide catch-all for every possible executable, since neither shell can do that safely.
 Anything not on that list (PHP, C/C++ compilers, .NET, build tools, etc.) runs completely
 unmodified.
+
+---
 
 ## Supported Providers
 
@@ -124,6 +157,8 @@ export BETTER_ERRORS_API_KEY=sk-...
 export BETTER_ERRORS_BASE_URL=https://api.openai.com/v1
 ```
 
+---
+
 ## How It Works & Security
 
 1. **Capture:** Streams command output live in wrapper mode or reads piped input (`stdin`).
@@ -131,6 +166,8 @@ export BETTER_ERRORS_BASE_URL=https://api.openai.com/v1
 3. **Redact (`redactor.py`):** Scrubs API keys, Bearer tokens, AWS/GCP credentials, database URLs with passwords, private keys, JWTs, and secret assignments with `[REDACTED]` before sending data to an LLM. *(Always double-check sensitive codebases, and use `ollama` if you want zero external calls.)*
 4. **Analyze & Diff (`providers.py`, `patcher.py`):** Separates the plain-English root cause from the code patch, shows a unified diff against the current file, and prompts `Fix bug? [y/N]`.
 5. **Safe Apply & Backup:** Saves a timestamped backup before applying changes atomically, and offers to re-run your command to verify.
+
+---
 
 ## Project Structure
 
@@ -154,6 +191,8 @@ better-errors/
 └── README.md
 ```
 
+---
+
 ## Development
 
 ```bash
@@ -162,11 +201,15 @@ pytest
 pytest --cov=better_errors --cov-report=term-missing
 ```
 
+---
+
 ## Roadmap
 
 - Parsers for Node.js, Rust, and Go errors/panics
 - Multi-file patch support
 - `--dry-run` mode to inspect explanations and diffs without prompting to apply
+
+---
 
 ## License
 
