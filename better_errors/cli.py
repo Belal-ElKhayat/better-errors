@@ -374,8 +374,8 @@ def _run_hook(args: list[str]) -> int:
         ps_installed = ps_path.is_file() and hook_module.MARKER_START in ps_path.read_text()
         console.print(f"PowerShell hook: {'[green]installed[/green]' if ps_installed else '[dim]not installed[/dim]'} ({ps_path})")
         if sys.platform == "win32":
-            cmd_installed = hook_module.cmd_autorun_script_path().is_file()
-            console.print(f"cmd.exe hook:    {'[green]installed[/green]' if cmd_installed else '[dim]not installed[/dim]'}")
+            cmd_installed = hook_module.cmd_hook_registered()
+            console.print(f"cmd.exe hook:    {'[green]installed[/green]' if cmd_installed else '[dim]not installed (or registry write was blocked)[/dim]'}")
         console.print(f"Analysis is currently: {'[green]enabled[/green]' if config_module.is_enabled() else '[yellow]disabled[/yellow]'}")
         return 0
 
