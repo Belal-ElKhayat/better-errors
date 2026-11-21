@@ -43,6 +43,22 @@ cd better-errors
 pip install -e .
 ```
 
+> **If `better-errors` isn't recognized as a command after installing,** your Python Scripts
+> directory isn't on PATH yet — this is a common first-run issue on Windows, not a broken
+> install. Every command in this README works exactly the same with `python -m better_errors.cli`
+> in place of `better-errors`:
+>
+> ```bash
+> python -m better_errors.cli init
+> python -m better_errors.cli python app.py
+> ```
+>
+> To make the short `better-errors` form work instead, add the folder pip warned about (shown
+> in the `pip install` output as *"The script better-errors.exe is installed in '...'"*) to your
+> PATH, then open a **new** terminal window. On Windows: `Win` → search **"Environment Variables"**
+> → **Edit the system environment variables** → **Environment Variables** → under **User
+> variables**, select `Path` → **Edit** → **New** → paste that folder → OK everywhere.
+
 ## Quickstart
 
 ### 1. Set up your provider
@@ -51,7 +67,7 @@ better-errors init
 ```
 Choose your provider, model, and API key. Saved to `~/.config/better-errors/config.toml`.
 
-> **Heads up on model names:** Model availability depends on your provider account and tier. If a default or selected model returns `404` or a model-not-found error, switch to an active model ID available on your account.
+> **Heads up on model names:** Model availability depends on your provider account and tier. If a default or selected model returns `404` or a model-not-found error, switch to an active model ID available on your account (e.g. for Groq, check `https://api.groq.com/openai/v1/models` with your key).
 
 ### 2. Run a command or pipe output
 ```bash
@@ -81,6 +97,11 @@ better-errors hook uninstall   # remove hooks cleanly
 ```
 
 Open a new terminal window after installing so the hook loads. Toggle analysis anytime with `better-errors disable` and `better-errors enable`. If a provider returns a rate-limit/quota error (`429` or `402`), `better-errors` automatically disables itself so your workflow isn't blocked until you run `better-errors enable`.
+
+This hooks a fixed, explicit list of commands (see `HOOKED_COMMANDS` in `hook.py`) — it is not a
+system-wide catch-all for every possible executable, since neither shell can do that safely.
+Anything not on that list (PHP, C/C++ compilers, .NET, build tools, etc.) runs completely
+unmodified.
 
 ## Supported Providers
 
